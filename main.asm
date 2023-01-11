@@ -131,7 +131,7 @@ ROM_Test::
 	jr .put
 
 .mbc1_3_ok
-	ld hl, { db "MBC1/MBC3 ROM OK!@" }
+	ld hl, { db "MBC3 ROM OK!@" }
 	jr .put
 
 ;.mbc2_ok
@@ -239,7 +239,7 @@ SRAM_Test::
 	jr .put
 
 .mbc1_3_ok
-	ld hl, { db "MBC1/MBC3 SRAM OK!@" }
+	ld hl, { db "MBC3 SRAM OK!@" }
 	jr .put
 
 ;.mbc2_ok
