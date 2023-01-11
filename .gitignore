@@ -1,0 +1,6 @@
+__pycache__/
+*.gb
+*.sym
+*.o
+*.sav
+gfx/*.1bpp
