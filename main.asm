@@ -305,14 +305,7 @@ PlaceTestResult::
 		add hl, de ; x+de
 .show_result
 		ld a, [wLastBankFailed]
-		and a
-		jr z, .not_fail
-; fail
-		ld [hl], 1 ; X
-		jr .done
-.not_fail
-	ld [hl], 0
-.done
+		ld [hl], a
 	pop bc
 	ret
 
