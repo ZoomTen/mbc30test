@@ -21,4 +21,4 @@ No X's are to be seen.
 ![](screenshots/mbc3_sram.png)
 
 * **ROM**: X's fill half the table or more.
-* **SRAM**: If X's fill the table and the `MBC3 SRAM OK!` message is displayed, only up 32KB SRAM is supported. This table might be filled with dots instead.
+* **SRAM**: If X's fill the table and the `MBC3 SRAM OK!` message is displayed, only up 32KB SRAM is supported. This table might be filled with dots instead and the message `MBC30 SRAM OK!` &mdash; in which case, 64KB SRAM is supported even despite the ROM being limited to 2MB.
