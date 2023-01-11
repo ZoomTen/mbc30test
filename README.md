@@ -4,6 +4,8 @@ This simple ROM aims to test your Game Boy, emulator, console or whatever that p
 
 The MBC30 is a variant of the MBC3 mapper that allows for up to 4MB ROM and 64KB SRAM. In contrast, the more common MBC3 mapper only allows up to 2MB ROM and 32KB SRAM.
 
+This source was built for [ASMotor](https://github.com/asmotor/asmotor), although hopefully it shouldn't be too hard to port it to RGBDS.
+
 ## Test results
 
 ### Full MBC30 support
