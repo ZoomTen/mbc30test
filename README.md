@@ -1,6 +1,6 @@
 # MBC3 / MBC30 Test ROM
 
-This simple ROM aims to test your emulator, console or whatever that plays GB games to check if it's MBC30-ready. It is inspired by [HyperHacker's MBC3 Tester ROM](https://github.com/EricKirschenmann/MBC3-Tester-gb), but with the addition of testing SRAM as well.
+This simple ROM aims to test your Game Boy, emulator, console or whatever that plays Game Boy games to check if it's MBC30-ready. It is inspired by [HyperHacker's MBC3 Tester ROM](https://github.com/EricKirschenmann/MBC3-Tester-gb), but with the addition of testing SRAM as well.
 
 The MBC30 is a variant of the MBC3 mapper that allows for up to 4MB ROM and 64KB SRAM. In contrast, the more common MBC3 mapper only allows up to 2MB ROM and 32KB SRAM.
 
