@@ -11,7 +11,7 @@
 
 	section "header", HOME[$134]
 	db "MBC TESTING    "
-	db $00 ; cgb enabled
+	db $80 ; cgb enabled
 	db "ZD" ; new licensee code
 	db $00 ; sgb enable
 	db $13 ; cart type

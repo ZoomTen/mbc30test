@@ -14,9 +14,9 @@ OBJ_FILES := $(patsubst %.asm, %.o, $(ASM_FILES))
 PNG_FILES := $(shell find gfx -name \*.png | sort)
 GFX_FILES := $(patsubst %.png, %.1bpp, $(PNG_FILES))
 
-all: MBC3_Test.gb
+all: MBC3_Test.gbc
 
-MBC3_Test.gb: $(OBJ_FILES) include/*
+MBC3_Test.gbc: $(OBJ_FILES) include/*
 	$(LINK) -fngb -cngb -mMBC3_Test.sym -o$@ $(OBJ_FILES)
 
 %.o: %.asm $(GFX_FILES)

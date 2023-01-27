@@ -3,7 +3,10 @@
 ; Interrupts
 ;-----------------------------------------
 
-	import hVblankAcknowledged
+	include "include/constants.inc"
+	include "include/hardware.inc"
+
+	import hVblankAcknowledged, hGBType, wCGB_BGP
 
 	section "rst 0", HOME[$00]
 rst_00:: nop
@@ -48,7 +51,27 @@ _hilo:: reti
 	section "interrupts", HOME
 VBlank::
 	push af
+; mark vblank acknowlegement
 		ld a, 1
 		ldh [hVblankAcknowledged], a
+
+; update GBC palette if applicable
+		ldh a, [hGBType]
+		cp GAMEBOY_COLOR
+		jr nz, .exit
+		push hl
+		push bc
+			ld hl, wCGB_BGP
+			ld b, 8 palettes
+			ld a, $80
+			ldh [rBGPI], a
+.copy_gbc_pals
+			ld a, [hl+]
+			ldh [rBGPD], a
+			dec b
+			jr nz, .copy_gbc_pals
+		pop bc
+		pop hl
+.exit
 	pop af
 	reti

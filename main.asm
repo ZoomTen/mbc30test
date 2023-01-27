@@ -4,16 +4,18 @@
 ;-----------------------------------------
 
 	include "include/hardware.inc"
+	include "include/constants.inc"
+	include "include/macros.inc"
 
 	import Font, States
 	import wSuccessfulBanks, wLastBankTested, wLastBankFailed, wFailingBanks
-	import hVblankAcknowledged
-
-tiles equs "* $10"
-SCREEN_WIDTH equ $20
+	import hVblankAcknowledged, hGBType, wCGB_BGP
 
 	section "main", HOME[$150]
 Init::
+; set gameboy type
+	ldh [hGBType], a
+
 ; clear WRAM
 	di
 	xor a
@@ -21,9 +23,35 @@ Init::
 	ld b, ($e000-$c000)/$100
 	call FillBlocks
 
+; reset scroll
+	ldh [rSCX], a
+	ldh [rSCY], a
+
 ; set stack
 	ld sp, $dfff
 
+; init palettes
+	ldh a, [hGBType]
+	cp $11
+	jr nz, .dmg
+;.gbc
+	ld hl, {
+	RGB 31,31,31
+	RGB 31,31,31
+	RGB 31,31,31
+	RGB 10,05,14
+}
+	ld de, wCGB_BGP
+	ld bc, 1 palettes
+	call Copy
+	jr .palette_ok
+
+.dmg
+	ld a, %11100100
+	ld [rBGP], a
+	ld [rOBP0], a
+
+.palette_ok
 ; reset audio
 	ldh [rNR52], a
 
@@ -98,8 +126,6 @@ ROM_Test::
 .increment
 	ld a, c
 	ld [wLastBankTested], a
-
-	call WaitVBlank
 	call PlaceTestResult
 
 	inc c
@@ -208,8 +234,6 @@ SRAM_Test::
 .increment
 	ld a, c
 	ld [wLastBankTested], a
-
-	call WaitVBlank
 	call PlaceTestResult
 	call CloseSRAM
 
@@ -304,6 +328,7 @@ PlaceTestResult::
 		ld d, 0 ; .
 		add hl, de ; x+de
 .show_result
+		call WaitVBlank
 		ld a, [wLastBankFailed]
 		ld [hl], a
 	pop bc
@@ -417,7 +442,7 @@ WaitFrames::
 	ret
 
 ;;--
-;; Wait until the next VBlank manually (LY==91)
+;; Wait until the next VBlank.
 ;;--
 WaitVBlank::
 	ld a, 0
@@ -450,6 +475,24 @@ CopyDouble::
 	or c
 	ret z
 	jr .loop
+
+;;--
+;; Copies a block of data from de to hl for bc bytes.
+;; 
+;; @param	hl	Source
+;; @param	de	Destination
+;; @param	bc	Length of source
+;;--
+Copy::
+.loop
+	ld a, [hl+]
+	ld [de], a
+	inc de
+	dec bc
+	ld a, c
+	or b
+	jr nz, .loop
+	ret
 
 ;;--
 ;; Clears BG map 0. Best used when the screen is disabled.

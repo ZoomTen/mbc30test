@@ -9,8 +9,9 @@ wSuccessfulBanks::	db
 wFailingBanks:: db
 wLastBankTested::	db
 wLastBankFailed:: db
+wCGB_BGP:: ds 8 * 8
 
 	section "hram", HRAM
 
 hVblankAcknowledged:: db
-
+hGBType:: db
