@@ -9,7 +9,7 @@
 
 	import Font, States
 	import wSuccessfulBanks, wLastBankTested, wLastBankFailed, wFailingBanks
-	import hVblankAcknowledged, hGBType, wCGB_BGP
+	import hVblankAcknowledged, hGBType, wCGB_BGP, wActualByte
 
 	section "main", HOME[$150]
 Init::
@@ -106,6 +106,7 @@ ROM_Test::
 ; check bank:4000, is it equal to the bank number?
 	ld [MBC3RomBank], a
 	ld a, [$4000]
+	ld [wActualByte], a ; for checking
 	cp c
 	jr nz, .fail
 
@@ -215,6 +216,7 @@ SRAM_Test::
 	ld a, c
 	call OpenSRAM
 	ld a, [$a000]
+	ld [wActualByte], a ; for checking
 	cp c
 	jr nz, .fail
 
