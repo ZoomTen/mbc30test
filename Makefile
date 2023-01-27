@@ -29,4 +29,4 @@ tidy:
 	rm -fv $(OBJ_FILES) $(GFX_FILES) *.sym *.sav
 
 clean: tidy
-	rm -fv *.gb
+	rm -fv *.gb *.gbc
