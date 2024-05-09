@@ -26,7 +26,15 @@ jobs:
       with:
         python-version: 3.8
     
+    - name: Cache ASMotor
+      id: cache-asmotor
+      uses: actions/cache@v4
+      with:
+        path: motor-bin
+        key: ${{ runner.os }}-asmotor-1.3rc
+    
     - name: Setup ASMotor
+      if: ${{ steps.cache-asmotor.outputs.cache-hit != 'true' }}
       run: |
         mkdir motor-bin
         cd motor-bin
