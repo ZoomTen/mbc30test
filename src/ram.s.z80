@@ -5,9 +5,9 @@
 
 	section "ram", BSS[$c000]
 
-wSuccessfulBanks::	db
+wSuccessfulBanks:: db
 wFailingBanks:: db
-wLastBankTested::	db
+wLastBankTested:: db
 wLastBankFailed:: db
 wCGB_BGP:: ds 8 * 8
 wActualByte:: db

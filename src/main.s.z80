@@ -21,7 +21,7 @@ Init::
 	di
 	xor a
 	ld hl, $c000
-	ld b, ($e000-$c000)/$100
+	ld b, ($e000 - $c000) / $100
 	call FillBlocks
 
 ; reset scroll
@@ -35,19 +35,21 @@ Init::
 	ldh a, [hGBType]
 	cp $11
 	jr nz, .dmg
-;.gbc
+	
+	;.gbc
 	ld hl, {
-	RGB 31,31,31
-	RGB 31,31,31
-	RGB 31,31,31
-	RGB 10,05,14
-}
+		RGB 31,31,31
+		RGB 31,31,31
+		RGB 31,31,31
+		RGB 10,05,14
+	}
 	ld de, wCGB_BGP
 	ld bc, 1 palettes
 	call Copy
 	jr .palette_ok
 
 .dmg
+; setup BGP and OBP palettes for DMG
 	ld a, %11100100
 	ld [rBGP], a
 	ld [rOBP0], a
@@ -56,21 +58,23 @@ Init::
 ; reset audio
 	ldh [rNR52], a
 
+; reset display
 	call DisableLCD
 
-; copy over graphics we need
+; copy over font
 	ld hl, Font
 	ld de, vChars0 + ($20 tiles)
-	ld bc, ($60 tiles)/2
+	ld bc, ($60 tiles) / 2
 	call CopyDouble
 
+; copy over state gfx
 	ld hl, States
 	ld de, vChars0
-	ld bc, (2 tiles)/2
+	ld bc, (2 tiles) / 2
 	call CopyDouble
 
 ; enable vblank only
-	ld a, (1<<VBLANK)
+	ld a, (1 << VBLANK)
 	ldh [rIE], a
 	ei
 
@@ -90,7 +94,7 @@ ROM_Test:
 	call ClearTestVariables
 	call EnableLCD
 
-; c = bank counter
+; init c = bank counter
 	ld c, 0
 .loop
 ; reset failed indicator
@@ -100,7 +104,7 @@ ROM_Test:
 ; get which bank to test
 	ld a, c
 
-; special cases
+; do special case for home bank
 	and a
 	jr z, .home ; bank 00
 
@@ -117,8 +121,7 @@ ROM_Test:
 	ld [wSuccessfulBanks], a
 	jr .increment
 
-; contents differ
-.fail
+.fail ; contents differ
 	ld a, 1
 	ld [wLastBankFailed], a
 	ld a, [wFailingBanks]
@@ -147,8 +150,8 @@ ROM_Test:
 	jr z, .mbc30_ok
 	cp 128
 	jr z, .mbc1_3_ok
-;	cp 16
-;	jr z, .mbc2_ok
+	;cp 16
+	;jr z, .mbc2_ok
 	jr .failed
 
 .mbc30_ok
@@ -190,8 +193,7 @@ SRAM_Test:
 	call EnableLCD
 
 ; first, write bank numbers to SRAM
-; c = bank counter
-	ld c, 0
+	ld c, 0 ; bank counter
 .write_loop
 	call WaitVBlank
 	ld a, c
@@ -205,9 +207,8 @@ SRAM_Test:
 	jr nz, .write_loop
 
 ; then, verify that the bank numbers are right
-; c = bank counter
 .done_writing
-	ld c, 0
+	ld c, 0 ; bank counter
 .loop
 	ld a, c
 	cp NUM_SRAM_BANKS
@@ -255,8 +256,8 @@ SRAM_Test:
 	cp 4
 	jr z, .mbc1_3_ok
 	jr .failed
-;	cp 16
-;	jr z, .mbc2_ok
+	;cp 16
+	;jr z, .mbc2_ok
 
 .mbc30_ok
 	ld a, [wFailingBanks]
@@ -269,9 +270,9 @@ SRAM_Test:
 	ld hl, { db "MBC3 SRAM OK!@" }
 	jr .put
 
-;.mbc2_ok
-;	ld hl, { db "MBC2 ROM OK!@" }
-;	jr .put
+	;.mbc2_ok
+	;ld hl, { db "MBC2 ROM OK!@" }
+	;jr .put
 
 .failed
 	ld hl, { db "UNKNOWN SRAM FAIL@" }
@@ -288,6 +289,7 @@ SRAM_Test:
 ;----------------------------------------------------
 
 Intermission:
+	; ASMotor quirk: "60 * 4" = 60, "60*4" = 60 * 4 
 	ld c, 60*4
 	call WaitFrames
 	jp DisableLCD
@@ -307,10 +309,10 @@ ClearTestVariables:
 PlaceTestResult:
 	push bc
 		ld hl, vBGMap0 + (SCREEN_WIDTH*2) + 3 ; starting point
-
-; determine y position first
 		ld a, [wLastBankTested]
-; get upper nybble
+
+	; determine y position first
+	; get upper nybble
 		swap a
 		and %1111
 		jr z, .shift_x
@@ -321,10 +323,10 @@ PlaceTestResult:
 		dec c
 		jr nz, .keep_shifting_down
 
-; then the x
+		; then the x
 .shift_x
 		ld a, [wLastBankTested]
-; get lower nybble
+	; get lower nybble
 		and %1111
 		jr z, .show_result ; don't shift right
 		ld e, a
@@ -342,11 +344,14 @@ PlaceTestResult:
 ;;--
 MakeHexTable:
 	call ClearScreen
-; horizontal hex table
+
+; make horizontal hex table
+	; ASMotor quirk: "(SCREEN_WIDTH* 1)" allowed; "SCREEN_WIDTH * 1" isn't
 	ld de, vBGMap0 + (SCREEN_WIDTH*1) + 3
 	ld hl, { db "0123456789ABCDEF@" }
 	call PutString
-; vertical hex table
+
+; make vertical hex table
 	ld de, vBGMap0 + (SCREEN_WIDTH*2) + 2
 	ld hl, { db "0`1`2`3`4`5`6`7`8`9`A`B`C`D`E`F@" }
 	call PutString
