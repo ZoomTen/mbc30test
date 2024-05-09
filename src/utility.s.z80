@@ -1,0 +1,133 @@
+;-----------------------------------------
+; Zumi's MBC3/MBC30 Test ROM
+; Utility Functions
+;-----------------------------------------
+
+	include "hardware.h.z80"
+	include "ram.h.z80"
+	include "constants.h.z80"
+
+	section "utils", HOME
+
+OpenSRAM::
+	push af
+; latch clock data
+		ld a, 1
+		ld [MBC3LatchClock], a
+; enable sram/clock write
+		ld a, SRAM_ENABLE
+		ld [MBC3SRamEnable], a
+	pop af
+	ld [MBC3SRamBank], a
+	ret
+
+CloseSRAM::
+	ld a, SRAM_DISABLE
+	ld [MBC3LatchClock], a
+	ld [MBC3SRamEnable], a
+	ret
+
+FillBlocks::
+.clr1:
+	ld c, $ff
+.clr2:
+	ld [hl+], a
+	dec c
+	jr nz, .clr2
+	ld [hl+], a
+	dec b
+	ret z
+	jr .clr1
+
+DisableLCD::
+	di
+.wait
+	ld a, [rLY]
+	cp LY_VBLANK
+	jr nc, .disable
+	jr .wait
+.disable
+	ld a, [rLCDC]
+	res LCD_ENABLE_BIT, a
+	ld [rLCDC], a
+	reti
+
+EnableLCD::
+	ld a, LCD_ENABLE | LCD_WIN_DISABLE | LCD_SET_8000 | LCD_MAP_9800 | LCD_OBJ_DISABLE | LCD_BG_ENABLE
+	ldh [rLCDC], a
+	ret
+
+WaitFrames::
+.wait
+	call WaitVBlank
+	dec c
+	jr nz, .wait
+	ret
+
+WaitVBlank::
+	ld a, 0
+	ldh [hVblankAcknowledged], a
+.wait
+	halt
+	nop
+	ldh a, [hVblankAcknowledged]
+	cp 1
+	ret nc
+	jr .wait
+
+CopyDouble::
+.loop:
+	ld a, [hl+]
+	ld [de], a
+	inc de
+	ld [de], a
+	inc de
+	dec bc
+	ld a, b
+	or c
+	ret z
+	jr .loop
+
+Copy::
+.loop
+	ld a, [hl+]
+	ld [de], a
+	inc de
+	dec bc
+	ld a, c
+	or b
+	jr nz, .loop
+	ret
+
+ClearScreen::
+	ld a, " "
+	ld hl, vBGMap0
+	ld b, (vBGMap1-vBGMap0)/$100
+	jp FillBlocks
+
+PutString::
+	push de
+.loop
+		ld a, [hl+]
+		cp "@"
+		jr z, .done ; @ = string terminator
+		cp "`"
+		jr nz, .no_line
+; ` = move down 1 line
+		ld a, [hl+]
+	pop de
+	push hl
+		ld hl, SCREEN_WIDTH
+		add hl, de
+		ld d, h
+		ld e, l
+	pop hl
+	push de
+.no_line
+		ld [de], a
+		inc de
+		jr .loop
+.done
+	pop de
+	ret
+

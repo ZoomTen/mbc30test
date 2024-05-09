@@ -778,17 +778,17 @@ def convert_1bpp_to_2bpp(data):
     return output
 
 
-def export_2bpp_to_1bpp(filename):
-    name, extension = os.path.splitext(filename)
-    image = open(filename, 'rb').read()
+def export_2bpp_to_1bpp(infile, outfile):
+    name, extension = os.path.splitext(infile)
+    image = open(infile, 'rb').read()
     image = convert_2bpp_to_1bpp(image)
-    to_file(name + '.1bpp', image)
+    to_file(outfile, image)
 
-def export_1bpp_to_2bpp(filename):
-    name, extension = os.path.splitext(filename)
-    image = open(filename, 'rb').read()
+def export_1bpp_to_2bpp(infile, outfile):
+    name, extension = os.path.splitext(infile)
+    image = open(infile, 'rb').read()
     image = convert_1bpp_to_2bpp(image)
-    to_file(name + '.2bpp', image)
+    to_file(outfile, image)
 
 
 def export_1bpp_to_png(filename, fileout=None):
@@ -836,17 +836,16 @@ def convert_to_2bpp(filenames=[]):
         else:
             raise Exception("Don't know how to convert {} to 2bpp!".format(filename))
 
-def convert_to_1bpp(filenames=[]):
-    for filename in filenames:
-        filename, name, extension = try_decompress(filename)
-        if extension == '.1bpp':
-            pass
-        elif extension == '.2bpp':
-            export_2bpp_to_1bpp(filename)
-        elif extension == '.png':
-            export_png_to_1bpp(filename)
-        else:
-            raise Exception("Don't know how to convert {} to 1bpp!".format(filename))
+def convert_to_1bpp(infile, outfile):
+    filename, name, extension = try_decompress(infile)
+    # if extension == '.1bpp':
+    #     pass
+    # elif extension == '.2bpp':
+    #     export_2bpp_to_1bpp(infile, outfile)
+    if extension == '.png':
+        export_png_to_1bpp(infile, outfile)
+    else:
+        raise Exception("Don't know how to convert {} to 1bpp!".format(filename))
 
 def convert_to_png(filenames=[]):
     for filename in filenames:
@@ -874,19 +873,20 @@ def try_decompress(filename):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('mode')
-    ap.add_argument('filenames', nargs='*')
+    ap.add_argument('input')
+    ap.add_argument('output')
     args = ap.parse_args()
 
     method = {
-        '2bpp': convert_to_2bpp,
-        '1bpp': convert_to_1bpp,
-        'png':  convert_to_png
+        # '2bpp': convert_to_2bpp,
+        '1bpp': convert_to_1bpp#,
+        # 'png':  convert_to_png
     }.get(args.mode, None)
 
     if method == None:
         raise Exception("Unknown conversion method!")
 
-    method(args.filenames)
+    method(args.input, args.output)
 
 if __name__ == "__main__":
     main()

@@ -5,3 +5,4 @@ __pycache__/
 *.o
 *.sav
 gfx/*.1bpp
+build/

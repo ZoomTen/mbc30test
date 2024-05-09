@@ -3,7 +3,7 @@
 ; Header data
 ;-----------------------------------------
 
-	import Init
+	include "main.h.z80"
 
 	section "entryPoint", HOME[$100]
 	nop

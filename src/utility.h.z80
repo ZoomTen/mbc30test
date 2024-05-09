@@ -1,0 +1,79 @@
+;;--
+;; Enable SRAM and switch to bank a
+;; 
+;; @param	a	SRAM bank
+;;--
+	import OpenSRAM
+
+;;--
+;; Disable SRAM
+;;--
+	import CloseSRAM
+
+;;--
+;; Clear 256 consecutive bytes with the
+;; value of A for every cycle.
+;; 
+;; @param	a	Value to clear with
+;; @param	b	How many cycles to run
+;; @param	hl	Where to start
+;; 
+;; @return	hl	(hl + (256 * b))
+;; @return	bc	0
+;;--
+	import FillBlocks
+	
+;;--
+;; Turn off the LCD with respect to VBlank.
+;;--
+	import DisableLCD
+
+;;--
+;; Turn on the screen with a saved preset.
+;;--
+	import EnableLCD
+
+;;--
+;; Wait C number of frames.
+;; 
+;; @param	c	amount of frames to wait (> 0)
+;;--
+	import WaitFrames
+
+;;--
+;; Wait until the next VBlank.
+;;--
+	import WaitVBlank
+
+;;--
+;; Copy a block of data, but each byte is doubled.
+;; Used to copy 1bpp data to VRAM.
+;; 
+;; @param	hl	Source
+;; @param	de	Destination
+;; @param	bc	Length of source
+;;--
+	import CopyDouble
+
+;;--
+;; Copy a block of data from de to hl for bc bytes.
+;; 
+;; @param	hl	Source
+;; @param	de	Destination
+;; @param	bc	Length of source
+;;--
+	import Copy
+
+;;--
+;; Clear BG map 0. Best used when the screen is disabled.
+;;--
+	import ClearScreen
+
+;;--
+;; Print a string pointed by HL at DE.
+;; Special commands are: @ (terminate) and ` (new line)
+;; 
+;; @param	hl	Source
+;; @param	de	Dest
+;;--
+	import PutString

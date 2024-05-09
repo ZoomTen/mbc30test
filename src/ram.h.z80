@@ -1,0 +1,11 @@
+; WRAM
+	import wSuccessfulBanks
+	import wFailingBanks
+	import wLastBankTested
+	import wLastBankFailed
+	import wCGB_BGP
+	import wActualByte
+
+; HRAM
+	import hVblankAcknowledged
+	import hGBType

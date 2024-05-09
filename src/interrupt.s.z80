@@ -3,10 +3,10 @@
 ; Interrupts
 ;-----------------------------------------
 
-	include "include/constants.inc"
-	include "include/hardware.inc"
+	include "constants.h.z80"
+	include "hardware.h.z80"
 
-	import hVblankAcknowledged, hGBType, wCGB_BGP
+	include "ram.h.z80"
 
 	section "rst 0", HOME[$00]
 rst_00:: nop
