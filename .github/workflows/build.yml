@@ -1,0 +1,52 @@
+name: Build MBC3 Test ROM
+
+on:
+  push:
+    branches: master
+  pull_request:
+    branches: master
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4.1.1
+    
+    - name: Determine artifact name
+      id: pkg-name
+      run: |
+        name="mbc3-test-$(git rev-parse --short HEAD)"
+        echo "${name}"
+        echo "name=${name}" >> $GITHUB_OUTPUT
+
+    - name: Setup Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.8
+    
+    - name: Setup ASMotor
+      run: |
+        mkdir motor-bin
+        cd motor-bin
+        wget -O asmotor.zip https://github.com/ZoomTen/asmotor/releases/download/v1.3.0.rc.test1/asmotor-4e27ee3-linux-x86_64.zip
+        unzip asmotor.zip
+        chmod +x *
+    
+    - name: Configure build
+      run: |
+        cmake -B ${PWD}/build
+    
+    - name: Build
+      run: |
+        PATH=$PWD/motor-bin:$PATH cmake --build ${PWD}/build
+
+    - name: Upload artifact
+      if: ${{ github.ref_name == 'master' }}
+      uses: actions/upload-artifact@v4.3.0
+      with:
+        name: ${{ steps.pkg-name.outputs.name }}
+        path: |
+          build/MBC3_Test.gbc
+          build/MBC3_Test.gbc.sym
