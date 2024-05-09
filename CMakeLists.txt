@@ -78,8 +78,6 @@ foreach(src ${SOURCES})
   list(APPEND OBJECTS ./src/${obj}.o)
 endforeach()
 
-message(STATUS "${OBJECTS}")
-
 add_custom_command(
   OUTPUT ${ROM_FILE}
   COMMAND
