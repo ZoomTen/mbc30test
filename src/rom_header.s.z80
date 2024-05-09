@@ -6,8 +6,7 @@
 	include "main.h.z80"
 
 	section "entryPoint", HOME[$100]
-	nop
-	jp Init
+	jr Init
 
 	section "header", HOME[$134]
 	db "MBC TESTING    "
