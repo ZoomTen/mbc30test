@@ -4,7 +4,9 @@ This simple ROM aims to test your Game Boy, emulator, console or whatever that p
 
 The MBC30 is a variant of the MBC3 mapper that allows for up to 4MB ROM and 64KB SRAM. In contrast, the more common MBC3 mapper only allows up to 2MB ROM and 32KB SRAM.
 
-This source was built for [ASMotor](https://github.com/asmotor/asmotor) (Prebuilt binaries are available [here](https://github.com/ZoomTen/asmotor/releases)).
+This source was built for [ASMotor](https://github.com/asmotor/asmotor) (ASMotor prebuilds are available [here](https://github.com/ZoomTen/asmotor/releases)).
+
+Built ROMs are available in [Releases](https://github.com/ZoomTen/mbc30test/releases) and [GitHub Action artifacts](https://github.com/ZoomTen/mbc30test/actions/workflows/build.yml) (login).
 
 ## Test results
 
