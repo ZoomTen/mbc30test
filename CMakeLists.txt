@@ -77,9 +77,9 @@ foreach(src ${SOURCES})
 endforeach()
 
 add_custom_command(
-  OUTPUT ${ROM_FILE}
+  OUTPUT ${ROM_FILE} ${ROM_FILE}.sym
   COMMAND
-    ${XLINK} -o${ROM_FILE} -fngb -cngb ${OBJECTS}
+    ${XLINK} -o${ROM_FILE} -m${ROM_FILE}.sym -fngb -cngb ${OBJECTS}
   DEPENDS
     ${GFX_GEN}
     ${OBJECTS}
