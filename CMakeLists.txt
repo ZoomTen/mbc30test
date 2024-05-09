@@ -69,8 +69,6 @@ foreach(src ${SOURCES})
       ${src}
     DEPFILE
       ${CMAKE_CURRENT_BINARY_DIR}/src/${obj}.dep
-    DEPENDS
-      ${GFX_GEN}
     VERBATIM
   )
   # ./ is needed because XLINK interprets / as
@@ -83,6 +81,7 @@ add_custom_command(
   COMMAND
     ${XLINK} -o${ROM_FILE} -fngb -cngb ${OBJECTS}
   DEPENDS
+    ${GFX_GEN}
     ${OBJECTS}
   VERBATIM
 )
